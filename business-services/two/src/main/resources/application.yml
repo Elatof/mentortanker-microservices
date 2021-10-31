@@ -15,3 +15,4 @@ metrics:
 resource:
   url:
    common: ${CONFIG_SERVER:http://localhost:8083/}
+   one: ${ONE_SERVER:http://localhost:8084/}

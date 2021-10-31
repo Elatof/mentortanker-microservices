@@ -1,20 +1,22 @@
 version: '3'
 services:
   discovery:
-    image: discovery
+    build: platform-services/discovery/
     ports:
       - 8761:8761
   apigateway:
-    image: apigateway
+    build: platform-services/apigateway/
     ports:
       - 8762:8762
     environment:
       - JAVA_OPTS=
         -DONE_SERVER=http://one:8084/
+        -DTWO_SERVER=http://two:8086/
+        -DCONFIG_SERVER=http://config:8083/
     depends_on:
       - discovery
   config:
-    image: config
+    build: business-services/common/
     ports:
       - 8083:8083
     environment:
@@ -23,7 +25,7 @@ services:
     depends_on:
       - discovery
   one:
-    image: one
+    build: business-services/one/
     ports:
       - 8084:8084
     environment:
@@ -35,13 +37,15 @@ services:
       - discovery
       - config
   two:
-    image: two
+    build: business-services/two/
     ports:
       - 8086:8086
     environment:
       - JAVA_OPTS=
         -DEUREKA_SERVER=http://discovery:8761/eureka
         -DCONFIG_SERVER=http://config:8083/
+        -DONE_SERVER=http://one:8084/
     depends_on:
       - discovery
       - config
+      - one
