@@ -1,0 +1,13 @@
+server:
+  port: 8762
+zuul:
+  routes:
+    common-route:
+      path: /common/**
+      url: ${COMMON_SERVER:http://localhost:8083/}
+    one-route:
+      path: /one/**
+      url: ${ONE_SERVER:http://localhost:8084/}
+    two-route:
+      path: /two/**
+      url: ${TWO_SERVER:http://localhost:8086/}

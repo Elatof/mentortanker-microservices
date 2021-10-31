@@ -1,0 +1,47 @@
+version: '3'
+services:
+  discovery:
+    image: discovery
+    ports:
+      - 8761:8761
+  apigateway:
+    image: apigateway
+    ports:
+      - 8762:8762
+    environment:
+      - JAVA_OPTS=
+        -DONE_SERVER=http://one:8084/
+    depends_on:
+      - discovery
+  config:
+    image: config
+    ports:
+      - 8083:8083
+    environment:
+      - JAVA_OPTS=
+        -DEUREKA_SERVER=http://discovery:8761/eureka
+    depends_on:
+      - discovery
+  one:
+    image: one
+    ports:
+      - 8084:8084
+    environment:
+      - JAVA_OPTS=
+        -DEUREKA_SERVER=http://discovery:8761/eureka
+        -DCONFIG_SERVER=http://config:8083/
+        -DTWO_SERVER=http://two:8086/
+    depends_on:
+      - discovery
+      - config
+  two:
+    image: two
+    ports:
+      - 8086:8086
+    environment:
+      - JAVA_OPTS=
+        -DEUREKA_SERVER=http://discovery:8761/eureka
+        -DCONFIG_SERVER=http://config:8083/
+    depends_on:
+      - discovery
+      - config
